@@ -1,0 +1,119 @@
+inventory = []
+current_location = ""
+import time
+
+def game_end():
+    time.sleep(2)
+    print("Thank you for playing!")
+    time.sleep(3)
+    quit()
+def ask_hammer():
+    return input("do you wish to take the hammer?")
+hammer_response = ""
+def ask_rock():
+    return input("do you want to smash that rock?")
+rock_response = ""
+def ask_door():
+    return input("you have the key, do you want to open the door?")
+door_response = ""
+def move(direction):
+    global current_location
+    if direction in locations[current_location]["paths"]:
+        current_location = locations[current_location]["paths"][direction]
+        print("you move " + direction)
+    elif direction not in locations[current_location]["paths"]:
+        print("you cannot go that way")
+
+def look():
+    if current_location == "mountains" and "key" not in inventory:
+        print("you are at the face of a giant mountain. a large door stands in your way. A comicly large hammer sits next to the door")
+        hammer_response = ask_hammer()
+        if hammer_response == "yes":
+            inventory.append("hammer")
+        elif hammer_response == "no":
+            print("ok, whatever.")
+        
+
+            
+        
+    elif current_location == "mountains" and "key" in inventory:
+        door_response = ask_door()
+        if door_response == "yes":
+            print("you open the door and find the stairway to heaven.\nThe led zeplin song stairway to heaven begins to play as you are drawn in and start to climb.")
+            game_end()
+        elif door_response == "no":
+            print("god would open it, I think you should.")
+            look()
+        else:
+            print("?")
+            look()
+        
+    elif current_location == "river":
+        print("you come upon a beutiful flowing river with a large rock on the bank.")
+        if "hammer" in inventory:
+            rock_response = ask_rock()
+            if rock_response == "yes":
+                print("WOW... that was pretty cool, and you found a key!")
+                inventory.append("key")
+                
+            elif rock_response == "no":
+                print("ok, whatever.")
+                
+            else:
+                print("?")
+                look()
+    elif current_location == "ocean":
+        print("before you is the most beutiful ocean scenery that any human as ever experienced.")
+    elif current_location == "white_house":
+        print("you see a white house with a boarded up door and one window.")
+
+
+
+
+
+
+#places
+locations = {
+    "white_house": {
+        "paths": {
+            "north": "mountains",
+            "south": "river",
+            "east":"ocean"
+        }
+    },
+    "mountains": {
+        "paths": {
+            "south": "white_house"
+        }
+    },
+    "river": {
+        "paths": {
+            "north": "white_house"
+        }
+    },
+    "ocean": {
+        "paths": {
+            "west": "white_house"
+        }
+    }
+}
+
+while True:
+    
+    current_location = "white_house"
+    while True:
+        look()
+        print("you can go")
+        for direction in locations[current_location]["paths"]:
+            print("- " + direction)
+        
+        action = input("> ")
+
+        if action.startswith("go "):
+            direction = action[3:]
+            move(direction)
+            
+        elif action.startswith("look"):
+            time.sleep(1)
+        else:
+            print("?")
